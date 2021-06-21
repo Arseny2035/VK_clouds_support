@@ -68,7 +68,7 @@ def videoResize(clipPath):
 
 ####################################################################################
 
-def imageResize(imgPath):
+def imageResize(imgPath, needRotate):
     img = Image.open(imgPath)
     volOfChanges = 0
     width, height = img.size
@@ -97,8 +97,9 @@ def imageResize(imgPath):
 
         img.thumbnail((width, height))
 
-        if imageRotate(img):
-            img = img.rotate(90, expand=True)
+        if needRotate:
+            if imageRotate(img):
+                img = img.rotate(90, expand=True)
 
         img.save(imgPath, exif=imgExif)
         print('Resized')
@@ -170,57 +171,65 @@ def delBiggestPhoto(path1, path2):
 ####################################################################################
 
 
+def findDublicates(fileList):
+    for i, imgHashPath in enumerate(filesList):
+        # print(filesList[imgHashPath])
+        for ii, iImgHashPath in enumerate(filesList):
+            if ii > i and imgHashPath != iImgHashPath:
+                if filesList[imgHashPath] == filesList[iImgHashPath]:
+                    delBiggestPhoto(imgHashPath, iImgHashPath)
+
+
+####################################################################################
+
+
 # Сначала уменьшаем фото и видео в основных папках и все всех вложенных папках
 # затем в основных директориях в папках контролеров пакуем по папкам с датами и типами актов
 
 # path = "D:\\PyProjects\\VK_foto\\test_photos"
 # path = "F:\\Архив\\Облака\\Yandex.Disk"
 # path = "K:\\Clouds\\TestActs"
-path = "K:\\Clouds\\YaDiskForTest"
-# path = "K:\\Clouds\\Yandex.Disk"
+# path = "K:\\Clouds\\YaDiskForTest"
+path = "K:\\Clouds\\Yandex.Disk"
 
 # path = input()
 pytesseract.pytesseract.tesseract_cmd = 'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
 
 mainDirs = os.listdir(path)
-maxVolOfChanges = 3000000000
+maxVolOfChanges = 30000000000
 curVolOfChanges = 0
 
 for mainDir in mainDirs:
     if curVolOfChanges < maxVolOfChanges:
         dirs = []
-        # if mainDir[0:17] == 'Телефон контролер' or mainDir[0:14] == 'Телефон мастер':
-        #     for dirPath, subFolder, files in os.walk(os.path.join(path, mainDir)):
-        #         dirs.append("".join(dirPath.rsplit(path))[1:])
-        #         print(dirs[len(dirs) - 1])
-        #
-        #     for curDir in dirs:
-        #         if curVolOfChanges < maxVolOfChanges:
-        #             files = os.listdir(os.path.join(path, curDir))
-        #             filesList = []
-        #
-        #             for file in files:
-        #                 print(os.path.join(path, curDir, file))
-        #                 already_resized = file[-5:-4]
-        #                 extension = "." + file[-3:]  # Get extension of current file
-        #
-        #                 if already_resized != '_':  # If file was resized, then we add '_' to the filename
-        #                     # Resize videos to 1600px on the large size
-        #                     if extension == '.3GP' or extension == '.MP4':
-        #                         clipPath = os.path.join(path, curDir, file)
-        #                         try:
-        #                             curVolOfChanges += videoResize(clipPath)
-        #                         except:
-        #                             print('Ошибка файла видео: ', clipPath)
-        #                     else:
-        #                         # Resize photos to 1600px on the large size
-        #                         if extension == '.JPG':
-        #                             imgPath = os.path.join(path, curDir, file)
-        #                             try:
-        #                                 curVolOfChanges += imageResize(imgPath)
-        #                             except:
-        #                                 print('Ошибка файла фото: ', imgPath)
-        #                 print(round(curVolOfChanges / 1000000))
+        if mainDir[0:17] == 'Телефон контролер' or mainDir[0:14] == 'Телефон мастер':
+            for dirPath, subFolder, files in os.walk(os.path.join(path, mainDir)):
+                dirs.append("".join(dirPath.rsplit(path))[1:])
+
+            for curDir in dirs:
+                if curVolOfChanges < maxVolOfChanges:
+                    files = os.listdir(os.path.join(path, curDir))
+                    for file in files:
+                        filePath = os.path.join(path, curDir, file)
+                        print(filePath)
+                        already_resized = file[-5:-4]
+                        extension = "." + file[-3:]  # Get extension of current file
+
+                        if already_resized != '_':  # If file was resized, then we add '_' to the filename
+                            # Resize videos to 1600px on the large size
+                            if extension == '.3GP' or extension == '.MP4':
+                                try:
+                                    curVolOfChanges += videoResize(filePath)
+                                except:
+                                    print('Ошибка файла видео: ', filePath)
+                            else:
+                                # Resize photos to 1600px on the large size
+                                if extension == '.JPG':
+                                    try:
+                                        curVolOfChanges += imageResize(filePath, False)
+                                    except:
+                                        print('Ошибка файла фото: ', filePath)
+                        print(round(curVolOfChanges / 1000000), 'Mb')
 
         if mainDir[0:20] == 'Фотографии абонентов':
             for dirPath, subFolder, files in os.walk(os.path.join(path, mainDir)):
@@ -231,7 +240,6 @@ for mainDir in mainDirs:
                 if curVolOfChanges < maxVolOfChanges:
                     files = os.listdir(os.path.join(path, curDir))
                     filesList = {}
-
                     for file in files:
                         filePath = os.path.join(path, curDir, file)
                         print(filePath)
@@ -241,29 +249,21 @@ for mainDir in mainDirs:
                         if already_resized != '_':  # If file was resized, then we add '_' to the filename
                             # Resize videos to 1600px on the large size
                             if extension == '.3GP' or extension == '.MP4':
-                                clipPath = filePath
                                 try:
-                                    curVolOfChanges += videoResize(clipPath)
+                                    curVolOfChanges += videoResize(filePath)
                                 except:
-                                    print('Ошибка файла видео: ', clipPath)
+                                    print('Ошибка файла видео: ', filePath)
                             else:
                                 # Resize photos to 1600px on the large size
                                 if extension == '.JPG':
-                                    imgPath = filePath
-
-                                    filesList[imgPath] = calcImageHash(imgPath)
+                                    filesList[filePath] = calcImageHash(filePath)
                                     try:
-                                        curVolOfChanges += imageResize(imgPath)
+                                        curVolOfChanges += imageResize(filePath, False)
                                     except:
-                                        print('Ошибка файла фото: ', imgPath)
+                                        print('Ошибка файла фото: ', filePath)
                         print(round(curVolOfChanges / 1000000))
 
-                    for i, imgHashPath in enumerate(filesList):
-                        print(filesList[imgHashPath])
-                        for ii, iImgHashPath in enumerate(filesList):
-                            if ii > i and imgHashPath != iImgHashPath:
-                                if filesList[imgHashPath] == filesList[iImgHashPath]:
-                                    delBiggestPhoto(imgHashPath, iImgHashPath)
+                    findDublicates(filesList)
 
 # Now we are create list of main dirs and check names of controllers and masters.
 # For each suitable dir we create list of files with path and date-time of creation.
@@ -273,5 +273,12 @@ for mainDir in mainDirs:
 # photos which refer to this document, and then rename dir in name of type of current document.
 
 
+# Дубликаты нужно искать еще и папках мастеров, но в том случае, если были обнаружены новые
+# файлы. То есть в функцию файдДубликатес лучше добавить просмотр файлов и формирование их списка.
+# 0. Или переименовать все файлы с _ в конце или добавлять файлы в множество и сохранять множество
+# по окончанию работ.
+# Если работать мнозжествами, то можно перед стартом проверить объем работы путем сравнения с
+# текущим множествои и отображать процесс и примерное времся по ходу работы. По мере сравнения
+# надо парралельно обнослять сам список в случае отсутствия файлов.
 # 1. Список файлов на Макс Вол Сайз. По мере выполнения показывать процент
 # 2. Открывать фото в cv2  смотреть ориентацию.
