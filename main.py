@@ -3,7 +3,6 @@ import numpy
 from moviepy import editor
 from PIL import Image
 import os
-
 import numpy as np
 import argparse
 import cv2
@@ -12,23 +11,23 @@ import pytesseract
 
 ####################################################################################
 
-# Получить дату съемки. Если в EXIF отсутствует, либо если видео, то далее смотрим на
-# имя файлы и преобразуем из него
-def getDateTaken(img):
-    exif = img.getexif()
-    creation_time = exif.get
-    return creation_time
+# # Получить дату съемки. Если в EXIF отсутствует, либо если видео, то далее смотрим на
+# # имя файлы и преобразуем из него
+# def getDateTaken(img):
+#     exif = img.getexif()
+#     creation_time = exif.get
+#     return creation_time
 
 
 ####################################################################################
 
 # Функция для уменьшения разрешения клипа, сохранения уменьшенного клипа с разрешением MP4
 # и удалениея старого клипа
-def videoResize(clipPath):
-    volOfChanges = 0
-    newClipPath = clipPath[:-4] + '_.MP4'
+def videoResize(clip_path):
+    vol_of_changes = 0
+    new_clip_path = clip_path[:-4] + '_.MP4'
     try:
-        clip = mp.editor.VideoFileClip(clipPath)
+        clip = mp.editor.VideoFileClip(clip_path)
         width, height = clip.size
         print(width, height)
 
@@ -49,43 +48,43 @@ def videoResize(clipPath):
                 clip = clip.resize(newsize=(width, height))
 
             try:
-                clip.write_videofile(newClipPath, codec="libx264")
+                clip.write_videofile(new_clip_path, codec="libx264")
             except:
                 print('Codec libx264 error')
-                clip.write_videofile(newClipPath)
+                clip.write_videofile(new_clip_path)
             clip.close()
             try:
-                os.remove(clipPath)
+                os.remove(clip_path)
             except OSError as e:
-                print("Ошибка: %s : %s" % (clipPath, e.strerror))
+                print("Ошибка: %s : %s" % (clip_path, e.strerror))
         else:
             clip.close()
             # Check, did we resize and resave with "_" video file early wit error
             # which create both files - with "_" and without
-            if os.path.exists(newClipPath):
-                os.remove(clipPath)
+            if os.path.exists(new_clip_path):
+                os.remove(clip_path)
             else:
-                os.rename(clipPath, newClipPath)
+                os.rename(clip_path, new_clip_path)
 
-        volOfChanges = os.path.getsize(newClipPath)
+        vol_of_changes = os.path.getsize(new_clip_path)
 
     except:
-        print('Can\'t resize ', clipPath)
+        print('Can\'t resize ', clip_path)
 
-    return volOfChanges, newClipPath
+    return vol_of_changes, new_clip_path
 
 
 ####################################################################################
 
-def imageResize(imgPath, needRotate):
-    img = Image.open(imgPath)
-    volOfChanges = 0
+def imageResize(img_path, need_rotate):
+    img = Image.open(img_path)
+    vol_of_changes = 0
     width, height = img.size
     print(width, height)
     if height > 1600 or width > 1600:
 
-        imgExif = img.getexif()
-        if imgExif is None:
+        img_exif = img.getexif()
+        if img_exif is None:
             print('Sorry, image has no exif data.')
 
         width, height = img.size
@@ -101,55 +100,54 @@ def imageResize(imgPath, needRotate):
 
         img.thumbnail((width, height))
 
-        if needRotate:
+        if need_rotate:
             if imageRotate(img):
                 img = img.rotate(90, expand=True)
 
-        img.save(imgPath, exif=imgExif)
+        img.save(img_path, exif=img_exif)
         print('Resized')
 
-        volOfChanges = os.path.getsize(imgPath)
+        vol_of_changes = os.path.getsize(img_path)
 
     img.close()
 
-    return volOfChanges
+    return vol_of_changes
 
 
 ####################################################################################
 
 def imageRotate(img):
-    imgCheck = cv2.cvtColor(numpy.array(img), cv2.COLOR_RGB2BGR)
+    img_check = cv2.cvtColor(numpy.array(img), cv2.COLOR_RGB2BGR)
 
     ### Detecting words
-    hImg, wImg, _ = imgCheck.shape
-    foundWord = False
-    rotate = False
+    found_word = False
+    f_rotate = False
     try:
-        boxes = pytesseract.image_to_data(imgCheck, lang="rus")
+        boxes = pytesseract.image_to_data(img_check, lang="rus")
         # print(boxes)
         # Check length of width and height. If width < height then photo is rotated and we need ti rotate it.
         for x, b in enumerate(boxes.splitlines()):
-            if foundWord == False:
+            if not found_word:
                 if x != 0:
                     b = b.split()
                     if len(b) == 12:
                         if len(b[11]) > 6:
-                            foundWord = True
+                            found_word = True
                             if int(b[8]) < int(b[9]):
-                                rotate = True
+                                f_rotate = True
     except:
-        rotate = False
+        f_rotate = False
 
-    return rotate
+    return f_rotate
 
 
 ####################################################################################
 
 # Find hash of pictures for farther comparison
-def calcImageHash(imgPath):
-    image = Image.open(imgPath)
-    image = cv2.cvtColor(numpy.array(image), cv2.COLOR_RGB2BGR)  # Read image
-    resized = cv2.resize(image, (8, 8), interpolation=cv2.INTER_AREA)  # Resize image to 8x8
+def calcImageHash(img_path):
+    img = Image.open(img_path)
+    img = cv2.cvtColor(numpy.array(img), cv2.COLOR_RGB2BGR)  # Read image
+    resized = cv2.resize(img, (8, 8), interpolation=cv2.INTER_AREA)  # Resize image to 8x8
     gray_image = cv2.cvtColor(resized, cv2.COLOR_BGR2GRAY)  # Convert image in gray format
     avg = gray_image.mean()  # Find average value of pixels
     ret, threshold_image = cv2.threshold(gray_image, avg, 255, 0)  # Find binarity by the threshold
@@ -180,17 +178,48 @@ def delBiggestPhoto(path1, path2):
 ####################################################################################
 
 
-def findDuplicates(fList):
-    for i, imgHashPath in enumerate(fList):
-        for ii, iImgHashPath in enumerate(fList):
-            # print('imgHashPath - ', imgHashPath)
-            # print('iImgHashPath - ', iImgHashPath)
-            if ii > i and imgHashPath != iImgHashPath:
-                if fList[imgHashPath] == fList[iImgHashPath]:
+def findDuplicates(f_list):
+    for i, img_hash_path in enumerate(f_list):
+        for ii, i_img_hash_path in enumerate(f_list):
+            if ii > i and img_hash_path != i_img_hash_path:
+                if f_list[img_hash_path] == f_list[i_img_hash_path]:
                     try:
-                        delBiggestPhoto(imgHashPath, iImgHashPath)
+                        delBiggestPhoto(img_hash_path, i_img_hash_path)
                     except:
                         pass
+
+
+####################################################################################
+# Read file with list of already modified files, which no need to check.
+def openChangedFilesList(f_path):
+    f_changed_files_list = set()
+    try:
+        # open file and read in list.
+        with open(os.path.join(f_path, 'listfile.txt'), 'r') as f_list_file:
+            file_contents = f_list_file.readlines()
+
+            for line in file_contents:
+                # Delete last symbol of string.
+                current_place = line[:-1]
+                # Added new elements - files we do not checking.
+                f_changed_files_list.add(current_place)
+                f_list_file.close()
+    except:
+        print('ListFile not found.')
+    return f_changed_files_list
+
+
+####################################################################################
+
+
+def closeChangedFilesList(f_changed_files_list):
+    with open(os.path.join(path, 'listfile.txt'), 'w') as list_file:
+        for file_name in f_changed_files_list:
+            try:
+                list_file.write("%s\n" % file_name)
+            except:
+                pass
+        list_file.close()
 
 
 ####################################################################################
@@ -209,76 +238,71 @@ path = "K:\\Clouds\\Yandex.Disk"
 pytesseract.pytesseract.tesseract_cmd = 'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
 
 # Set directory for work where located dirs for modifying
-mainDirs = os.listdir(path)
+main_dirs = os.listdir(path)
 
-changedFilesList = []
-
-try:
-    # откроем файл и считаем его содержимое в список
-    with open(os.path.join(path, 'listfile.txt'), 'r') as listFile:
-        filecontents = listFile.readlines()
-
-        for line in filecontents:
-            # удалим заключительный символ перехода строки
-            current_place = line[:-1]
-
-            # добавим элемент в конец списка
-            changedFilesList.append(current_place)
-            listFile.close()
-except:
-    print('ListFile not found.')
+changed_files_list = openChangedFilesList(path)
 
 # Calculate size of all files to resize by comparison fileList of resized files and all files in directories
 # and summing their size.
 
-countFilesToCheck = 0
-for mainDir in mainDirs:
+count_files_to_check = 0
+for main_dir in main_dirs:
     dirs = []
-    filesToCheck = []
-    if mainDir[0:17] == 'Телефон контролер' or mainDir[0:14] == 'Телефон мастер' \
-            or mainDir[0:14] == 'Телефон слесарь' or mainDir[0:20] == 'Фотографии абонентов' \
-            or mainDir[0:18] == 'Фото-видео порывов':
+    if main_dir[0:17] == 'Телефон контролер' or main_dir[0:14] == 'Телефон мастер' \
+            or main_dir[0:14] == 'Телефон слесарь' or main_dir[0:20] == 'Фотографии абонентов' \
+            or main_dir[0:18] == 'Фото-видео порывов':
 
-        for dirPath, subFolder, files in os.walk(os.path.join(path, mainDir)):
-            dirs.append("".join(dirPath.rsplit(path))[1:])
+        for dir_path, sub_folder, files in os.walk(os.path.join(path, main_dir)):
+            dirs.append("".join(dir_path.rsplit(path))[1:])
 
-        for curDir in dirs:
-            print('Checking directory: ', curDir)
-            files = os.listdir(os.path.join(path, curDir))
+        for cur_dir in dirs:
+            print('Checking directory: ', os.path.join(path, cur_dir))
+            files = os.listdir(os.path.join(path, cur_dir))
             for file in files:
-                filePath = os.path.join(path, curDir, file)
-                if filePath not in changedFilesList:
-                    filesToCheck.append(filePath)
-                    countFilesToCheck += 1
+                file_path = os.path.join(path, cur_dir, file)
+                if file_path not in changed_files_list:
+                    # Count files to check to show correct value of progress.
+                    count_files_to_check += 1
 
-print(countFilesToCheck)
+print(count_files_to_check)
 # Set maximum size of modified files in one go
-maxVolOfChanges = 5000000000
-curVolOfChanges = 0
-countFiles = 0
-if countFilesToCheck > 1:
-    for mainDir in mainDirs:
-        if curVolOfChanges < maxVolOfChanges:
+max_vol_of_changes = 5000000000
+cur_vol_of_changes = 0
+count_files = 0
+if count_files_to_check > 1:
+    for main_dir in main_dirs:
+        if cur_vol_of_changes < max_vol_of_changes:
             dirs = []
-            # Scanning and modifying files in dirs of workers (maybe, we would be rotate this files, but this is wery slow function)
-            if mainDir[0:17] == 'Телефон контролер' or mainDir[0:14] == 'Телефон мастер' \
-                    or mainDir[0:14] == 'Телефон слесарь' or mainDir[0:20] == 'Фотографии абонентов' \
-                    or mainDir[0:18] == 'Фото-видео порывов':
+            # Scanning and modifying files in dirs of workers (maybe, we would be rotate this files,
+            # but this is wery slow function)
+            if main_dir[0:17] == 'Телефон контролер' or main_dir[0:14] == 'Телефон мастер' \
+                    or main_dir[0:14] == 'Телефон слесарь' or main_dir[0:20] == 'Фотографии абонентов' \
+                    or main_dir[0:18] == 'Фото-видео порывов':
+
+                # Need to checking orientation and rotate photos only for directory "Телефон контролер"
+                if main_dir[0:17] == 'Телефон контролер':
+                    rotate = True
+                else:
+                    rotate = False
 
                 # Scan current directory and create list of files fow work
-                for dirPath, subFolder, files in os.walk(os.path.join(path, mainDir)):
-                    dirs.append("".join(dirPath.rsplit(path))[1:])
-                for curDir in dirs:
-                    if curVolOfChanges < maxVolOfChanges:
+                for dir_path, sub_folder, files in os.walk(os.path.join(path, main_dir)):
+                    dirs.append("".join(dir_path.rsplit(path))[1:])
+                for cur_dir in dirs:
+                    if cur_vol_of_changes < max_vol_of_changes:
                         # Create list of files in current directory
-                        files = os.listdir(os.path.join(path, curDir))
-                        filesList = {}
+                        files = os.listdir(os.path.join(path, cur_dir))
+                        files_list = {}
 
                         for file in files:
-                            filePath = os.path.join(path, curDir, file)
-                            if filePath not in changedFilesList:
-                                print(filePath)
-                                countFiles += 1
+                            file_path = os.path.join(path, cur_dir, file)
+                            if file_path not in changed_files_list:
+                                print(file_path)
+                                count_files += 1
+                                if count_files % 1000 == 0:
+                                    closeChangedFilesList(changed_files_list)
+                                    changed_files_list = openChangedFilesList(path)
+
                                 # Try to find "_" in the end of filename, because this is the mark which tell us
                                 # that file already was resized. It important for video files because they are very large.
                                 already_resized = file[-5:-4]
@@ -289,86 +313,35 @@ if countFilesToCheck > 1:
                                         # Resize videos to 640x on the large size
                                         try:
                                             # Append current summary volume of changes after resize
-                                            resultVideoResize = videoResize(filePath)
-                                            curVolOfChanges += resultVideoResize[0]
-                                            filePath = resultVideoResize[1]
+                                            resultVideoResize = videoResize(file_path)
+                                            cur_vol_of_changes += resultVideoResize[0]
+                                            file_path = resultVideoResize[1]
                                         except:
-                                            print('Ошибка файла видео: ', filePath)
+                                            print('Ошибка файла видео: ', file_path)
                                 else:
                                     # Resize photos to 1600px on the large size
                                     if extension == '.JPG' or extension == '.jpg':
                                         try:
                                             # Append current summary volume of changes after resize
-                                            # If True then need to find text in picture, check text orientatoin and
-                                            # rotate picture if necessary. This is wery  slow function
-                                            curVolOfChanges += imageResize(filePath, False)
+                                            # If True then need to find text in picture, check text orientation and
+                                            # rotate picture if necessary. This is very slow function
+                                            cur_vol_of_changes += imageResize(file_path, rotate)
                                             # Appending in filelist only files of image to find duplicates after
                                             # resize files
-                                            filesList[filePath] = calcImageHash(filePath)
+                                            files_list[file_path] = calcImageHash(file_path)
                                         except:
-                                            print('Ошибка файла фото: ', filePath)
+                                            print('Ошибка файла фото: ', file_path)
 
                                 # Print current summary volume of file size of changed files
-                                print(round(countFiles / countFilesToCheck * 100), '%, ',
-                                      round(curVolOfChanges / 1000000), 'Mb')
+                                print(round(count_files / count_files_to_check * 100), '%, ',
+                                      round(cur_vol_of_changes / 1000000), 'Mb')
 
-                            changedFilesList.append(filePath)
+                            changed_files_list.add(file_path)
 
                         # Find duplicates of photos in current directory and delete biggest file
-                        findDuplicates(filesList)
+                        findDuplicates(files_list)
 
-    #############################################################################################
-
-    # # Scanning and modifying files in directory where files located permanently.
-    # # Here we also need to find duplicates
-    # if mainDir[0:20] == 'Фотографии абонентов' or mainDir[0:18] == 'Фото-видео порывов':
-    #     for dirPath, subFolder, files in os.walk(os.path.join(path, mainDir)):
-    #         dirs.append("".join(dirPath.rsplit(path))[1:])
-    #         print(dirs[len(dirs) - 1])
-    #
-    #     for curDir in dirs:
-    #         if curVolOfChanges < maxVolOfChanges:
-    #             # Create list of files in current directory
-    #             files = os.listdir(os.path.join(path, curDir))
-    #             filesList = {}
-    #             for file in files:
-    #                 filePath = os.path.join(path, curDir, file)
-    #                 print(filePath)
-    #                 # Try to find "_" in the end of filename, because this is the mark which tell us
-    #                 # that file already was resized. It important for video files because they are very large.
-    #                 already_resized = file[-5:-4]
-    #                 extension = "." + file[-3:]  # Get extension of current file
-    #
-    #                 if already_resized != '_':  # If file was resized, then we add '_' to the filename
-    #                     # Resize videos to 1600px on the large size
-    #                     if extension == '.3GP' or extension == '.MP4':
-    #                         try:
-    #                             # Append current summary volume of changes after resize
-    #                             curVolOfChanges += videoResize(filePath)
-    #                         except:
-    #                             print('Ошибка файла видео: ', filePath)
-    #                     else:
-    #                         # Resize photos to 1600px on the large size
-    #                         if extension == '.JPG':
-    #                             try:
-    #                                 # Append current summary volume of changes after resize
-    #                                 # If True then need to find text in picture, check text orientatoin and rotate
-    #                                 # picture if necessary. This is wery  slow function
-    #                                 curVolOfChanges += imageResize(filePath, False)
-    #                             except:
-    #                                 print('Ошибка файла фото: ', filePath)
-    #                             # Appending in filelist only files of image to find duplicates after resize files
-    #                             filesList[filePath] = calcImageHash(filePath)
-    #                 # Print current summary volume of file size of changed files
-    #                 print(round(curVolOfChanges / 1000000), 'Mb')
-    #
-    #             # Find duplicates of photos in current directory and delete biggest file
-    #             findDuplicates(filesList)
-
-    with open(os.path.join(path, 'listfile.txt'), 'w') as listFile:
-        for filename in changedFilesList:
-            listFile.write("%s\n" % filename)
-        listFile.close()
+    closeChangedFilesList(changed_files_list)
 
 # Now we are create list of main dirs and check names of controllers and masters.
 # For each suitable dir we create list of files with path and date-time of creation.
