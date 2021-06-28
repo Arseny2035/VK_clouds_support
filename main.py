@@ -31,7 +31,7 @@ def videoResize(clip_path):
         width, height = clip.size
         print(width, height)
 
-        if height > 640 or width > 640:
+        if height > 720 or width > 720:
             if height > width:
                 x = 640 / height
                 width = round(width * x)
@@ -266,7 +266,7 @@ for main_dir in main_dirs:
 
 print(count_files_to_check)
 # Set maximum size of modified files in one go
-max_vol_of_changes = 5000000000
+max_vol_of_changes = 50000000000
 cur_vol_of_changes = 0
 count_files = 0
 if count_files_to_check > 1:
