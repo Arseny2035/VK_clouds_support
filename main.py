@@ -266,9 +266,12 @@ for main_dir in main_dirs:
 
 print(count_files_to_check)
 # Set maximum size of modified files in one go
-max_vol_of_changes = 50000000000
+max_vol_of_changes = 100000000000
 cur_vol_of_changes = 0
 count_files = 0
+
+rotate = False # Need to repair this function
+
 if count_files_to_check > 1:
     for main_dir in main_dirs:
         if cur_vol_of_changes < max_vol_of_changes:
@@ -279,11 +282,11 @@ if count_files_to_check > 1:
                     or main_dir[0:14] == 'Телефон слесарь' or main_dir[0:20] == 'Фотографии абонентов' \
                     or main_dir[0:18] == 'Фото-видео порывов':
 
-                # Need to checking orientation and rotate photos only for directory "Телефон контролер"
-                if main_dir[0:17] == 'Телефон контролер':
-                    rotate = True
-                else:
-                    rotate = False
+                # # Need to checking orientation and rotate photos only for directory "Телефон контролер"
+                # if main_dir[0:17] == 'Телефон контролер':
+                #     rotate = True
+                # else:
+                #     rotate = False
 
                 # Scan current directory and create list of files fow work
                 for dir_path, sub_folder, files in os.walk(os.path.join(path, main_dir)):

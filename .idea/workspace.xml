@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="dc2f8cd7-13cb-419e-ac56-07030c621e7b" name="Default Changelist" comment="new7">
-      <change afterPath="$PROJECT_DIR$/VID_20191113_105344_TEMP_MPY_wvf_snd.mp3" afterDir="false" />
+    <list default="true" id="dc2f8cd7-13cb-419e-ac56-07030c621e7b" name="Default Changelist" comment="new8">
+      <change afterPath="$PROJECT_DIR$/2017-06-17 11-03-32_TEMP_MPY_wvf_snd.mp3" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
@@ -109,7 +109,14 @@
       <option name="project" value="LOCAL" />
       <updated>1624821718638</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="new8">
+      <created>1624851935123</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1624851935123</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -132,6 +139,7 @@
     <MESSAGE value="new5" />
     <MESSAGE value="new6" />
     <MESSAGE value="new7" />
-    <option name="LAST_COMMIT_MESSAGE" value="new7" />
+    <MESSAGE value="new8" />
+    <option name="LAST_COMMIT_MESSAGE" value="new8" />
   </component>
 </project>
