@@ -31,7 +31,7 @@ def videoResize(clip_path):
         width, height = clip.size
         print(width, height)
 
-        if height > 720 or width > 720:
+        if height > 640 or width > 640:
             if height > width:
                 x = 640 / height
                 width = round(width * x)
@@ -47,19 +47,17 @@ def videoResize(clip_path):
             else:
                 clip = clip.resize(newsize=(width, height))
 
-            try:
-                clip.write_videofile(new_clip_path, codec="libx264")
-            except:
-                print('Codec libx264 error')
-                clip.write_videofile(new_clip_path)
+            print("Clip duration:", clip.duration, "sec")
+            clip.write_videofile(new_clip_path, fps=30, codec="libx264")
+
             clip.close()
             try:
                 os.remove(clip_path)
             except OSError as e:
-                print("Ошибка: %s : %s" % (clip_path, e.strerror))
+                print("Error: %s : %s" % (clip_path, e.strerror))
         else:
             clip.close()
-            # Check, did we resize and resave with "_" video file early wit error
+            # Check, did we resize and resave with "_" video file early with error
             # which create both files - with "_" and without
             if os.path.exists(new_clip_path):
                 os.remove(clip_path)
@@ -231,8 +229,8 @@ def closeChangedFilesList(f_changed_files_list):
 # path = "D:\\PyProjects\\VK_foto\\test_photos"
 # path = "F:\\Архив\\Облака\\Yandex.Disk"
 # path = "K:\\Clouds\\TestActs"
-# path = "K:\\Clouds\\YaDiskForTest"
-path = "K:\\Clouds\\Yandex.Disk"
+path = "K:\\Clouds\\YaDiskForTest"
+# path = "K:\\Clouds\\Yandex.Disk"
 
 # path = input()
 pytesseract.pytesseract.tesseract_cmd = 'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
@@ -270,7 +268,7 @@ max_vol_of_changes = 100000000000
 cur_vol_of_changes = 0
 count_files = 0
 
-rotate = False # Need to repair this function
+rotate = False  # Need to repair this function
 
 if count_files_to_check > 1:
     for main_dir in main_dirs:
@@ -282,7 +280,7 @@ if count_files_to_check > 1:
                     or main_dir[0:14] == 'Телефон слесарь' or main_dir[0:20] == 'Фотографии абонентов' \
                     or main_dir[0:18] == 'Фото-видео порывов':
 
-                # # Need to checking orientation and rotate photos only for directory "Телефон контролер"
+                # # Need to check orientation and rotate photos only for directory "Телефон контролер"
                 # if main_dir[0:17] == 'Телефон контролер':
                 #     rotate = True
                 # else:
@@ -310,8 +308,9 @@ if count_files_to_check > 1:
                                 # that file already was resized. It important for video files because they are very large.
                                 already_resized = file[-5:-4]
                                 extension = "." + file[-3:]  # Get extension of current file
-                                if extension == '.3GP' or extension == '.MP4' or extension == '.3gp' \
-                                        or extension == '.mp4':
+                                # if extension == '.3GP' or extension == '.MP4' or extension == '.3gp' \
+                                #         or extension == '.mp4':
+                                if extension == '.3GP' or extension == '.3gp':
                                     if already_resized != '_':  # If file was resized, then we add '_' to the end of filename
                                         # Resize videos to 640x on the large size
                                         try:
@@ -319,6 +318,7 @@ if count_files_to_check > 1:
                                             resultVideoResize = videoResize(file_path)
                                             cur_vol_of_changes += resultVideoResize[0]
                                             file_path = resultVideoResize[1]
+
                                         except:
                                             print('Ошибка файла видео: ', file_path)
                                 else:
