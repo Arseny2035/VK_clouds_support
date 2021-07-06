@@ -229,8 +229,8 @@ def closeChangedFilesList(f_changed_files_list):
 # path = "D:\\PyProjects\\VK_foto\\test_photos"
 # path = "F:\\Архив\\Облака\\Yandex.Disk"
 # path = "K:\\Clouds\\TestActs"
-path = "K:\\Clouds\\YaDiskForTest"
-# path = "K:\\Clouds\\Yandex.Disk"
+# path = "K:\\Clouds\\YaDiskForTest"
+path = "K:\\Clouds\\Yandex.Disk"
 
 # path = input()
 pytesseract.pytesseract.tesseract_cmd = 'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
@@ -302,15 +302,13 @@ if count_files_to_check > 1:
                                 count_files += 1
                                 if count_files % 1000 == 0:
                                     closeChangedFilesList(changed_files_list)
-                                    changed_files_list = openChangedFilesList(path)
 
                                 # Try to find "_" in the end of filename, because this is the mark which tell us
                                 # that file already was resized. It important for video files because they are very large.
                                 already_resized = file[-5:-4]
                                 extension = "." + file[-3:]  # Get extension of current file
-                                # if extension == '.3GP' or extension == '.MP4' or extension == '.3gp' \
-                                #         or extension == '.mp4':
-                                if extension == '.3GP' or extension == '.3gp':
+                                if extension == '.3GP' or extension == '.MP4' or extension == '.3gp' \
+                                        or extension == '.mp4':
                                     if already_resized != '_':  # If file was resized, then we add '_' to the end of filename
                                         # Resize videos to 640x on the large size
                                         try:
