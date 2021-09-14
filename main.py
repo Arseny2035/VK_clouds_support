@@ -167,9 +167,11 @@ def calcImageHash(img_path):
 # Get two path to files and delete bigger of them.
 def delBiggestPhoto(path1, path2):
     if os.path.getsize(path1) > os.path.getsize(path2):
+        print("Deleting:", path1)
         os.remove(path1)
     else:
         os.remove(path2)
+        print("Deleting:", path2)
 
 
 ####################################################################################
@@ -297,7 +299,7 @@ for path in path_list:
                     # else:
                     #     rotate = False
 
-                    # Scan current directory and create list of files fow work
+                    # Scan current directory and create list of files for work
                     for dir_path, sub_folder, files in os.walk(os.path.join(path, main_dir)):
                         dirs.append("".join(dir_path.rsplit(path))[1:])
                     for cur_dir in dirs:
@@ -311,26 +313,34 @@ for path in path_list:
                                 if file_path not in changed_files_list:
                                     print(file_path)
                                     count_files += 1
+                                    # Update ChangedFileList every 1000 files:
                                     if count_files % 1000 == 0:
                                         closeChangedFilesList(changed_files_list)
                                         changed_files_list = openChangedFilesList(path)
 
-                                    # Try to find "_" in the end of filename, because this is the mark which tell us
-                                    # that file already was resized. It important for video files because they are very large.
-                                    already_resized = file[-5:-4]
+
                                     extension = "." + file[-3:]  # Get extension of current file
                                     if extension == '.3GP' or extension == '.MP4' or extension == '.3gp' \
                                             or extension == '.mp4':
-                                        if already_resized != '_':  # If file was resized, then we add '_' to the end of filename
+                                        # Try to find "_" in the end of filename, because this is the mark which tell us
+                                        # that file already was resized. It important for video files because they are very large.
+                                        if file[-5:-4] != '_':  # If file was resized, then we add '_' to the end of filename
                                             # Resize videos to 640x on the large size
                                             try:
                                                 # Append current summary volume of changes after resize
                                                 resultVideoResize = videoResize(file_path)
                                                 cur_vol_of_changes += resultVideoResize[0]
                                                 file_path = resultVideoResize[1]
-
                                             except:
                                                 print('Ошибка файла видео: ', file_path)
+                                        else:
+                                            # If videofile with current filename + "_" exist, that means then current
+                                            # file already was early resized and in some reasons it wouldn't be deleted.
+                                            # Maybe because we join some archives to one. So we remove current file
+                                            # and don't resize it repeatedly.
+                                            if file.replace(".", "_.") in files:
+                                                os.remove(file_path)
+                                                print("Remove already resized file:", file_path)
                                     else:
                                         # Resize photos to 1600px on the large size
                                         if extension == '.JPG' or extension == '.jpg':
@@ -356,7 +366,9 @@ for path in path_list:
 
         closeChangedFilesList(changed_files_list)
 
+print("Done")
 os.system('pause')
+
 # Now we are create list of main dirs and check names of controllers and masters.
 # For each suitable dir we create list of files with path and date-time of creation.
 # Also we check photos in open_cv. Trying to find documents and it's name. For this will help
