@@ -1,3 +1,5 @@
-max_vol_of_changes = 500000
+max_vol_of_changes = 100000000
 F:\Архив\Облака\Yandex.Disk
 F:\Архив\Облака\Google.Drive
+E:\Архив\Облака\Yandex.Disk
+E:\Архив\Облака\Google.Drive

@@ -5,10 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="dc2f8cd7-13cb-419e-ac56-07030c621e7b" name="Default Changelist" comment="new 16">
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_05_07_2021_15_12_[Default_Changelist]/shelved.patch" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_05_07_2021_15_12__Default_Changelist_.xml" beforeDir="false" />
+      <change afterPath="$PROJECT_DIR$/output/main/_bz2 (1).pyd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/output/main/_ctypes (1).pyd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/output/main/_hashlib (1).pyd" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/output/main/tk86t (1).dll" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pathlistfile.txt" beforeDir="false" afterPath="$PROJECT_DIR$/pathlistfile.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
