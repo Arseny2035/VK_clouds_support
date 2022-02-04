@@ -6,6 +6,7 @@ import cv2
 import pytesseract
 import codecs
 from moviepy.video.io.VideoFileClip import VideoFileClip
+import moviepy.editor as mp
 
 
 ####################################################################################
@@ -26,7 +27,7 @@ def videoResize(clip_path):
     vol_of_changes = 0
     new_clip_path = clip_path[:-4] + '_.MP4'
     try:
-        clip = VideoFileClip(clip_path)
+        clip = mp.VideoFileClip(clip_path)
         width, height = clip.size
         print(width, height)
 
@@ -39,13 +40,15 @@ def videoResize(clip_path):
                 x = 640 / width
                 height = round(height * x)
                 width = 640
-
+            print('here 1')
             rotation = clip.rotation
+            print('here 2')
             if rotation in (90, 270):
                 clip = clip.resize(newsize=(height, width))
+                # clip = clip.resize(height=640)
             else:
                 clip = clip.resize(newsize=(width, height))
-
+            print('here 4')
             print("Clip duration:", clip.duration, "sec")
             clip.write_videofile(new_clip_path, fps=30, codec="libx264")
 
@@ -245,6 +248,7 @@ print('path_list:', path_list)
 print('max_vol_of_changes', round(max_vol_of_changes / 1000000, 0), 'mb')
 
 for path in path_list:
+    print(path)
     # Set directory for work where located dirs for modifying
     try:
         main_dirs = os.listdir(path)
@@ -263,13 +267,16 @@ for path in path_list:
                 or main_dir[0:18] == 'Фото-видео порывов':
 
             for dir_path, sub_folder, files in os.walk(os.path.join(path, main_dir)):
-                dirs.append("".join(dir_path.rsplit(path))[1:])
+                dir_append_path = "".join(dir_path.rsplit(path))[1:]
+                print('dir_append_path: ', dir_append_path)
+                dirs.append(dir_append_path)
 
             for cur_dir in dirs:
                 print('Checking directory: ', os.path.join(path, cur_dir))
                 files = os.listdir(os.path.join(path, cur_dir))
                 for file in files:
                     file_path = os.path.join(path, cur_dir, file)
+                    print('Checking file: ', file_path)
                     if file_path not in changed_files_list:
                         # Count files to check to show correct value of progress.
                         count_files_to_check += 1

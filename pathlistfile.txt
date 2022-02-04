@@ -1,5 +1,3 @@
-max_vol_of_changes = 100000000
-F:\Архив\Облака\Yandex.Disk
-F:\Архив\Облака\Google.Drive
-E:\Архив\Облака\Yandex.Disk
-E:\Архив\Облака\Google.Drive
+max_vol_of_changes = 10000000
+H:\Архив\Облака\Yandex.Disk
+H:\Архив\Облака\Google.Drive

@@ -4,12 +4,11 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="dc2f8cd7-13cb-419e-ac56-07030c621e7b" name="Default Changelist" comment="new 16">
-      <change afterPath="$PROJECT_DIR$/output/main/_bz2 (1).pyd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/output/main/_ctypes (1).pyd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/output/main/_hashlib (1).pyd" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/output/main/tk86t (1).dll" afterDir="false" />
+    <list default="true" id="dc2f8cd7-13cb-419e-ac56-07030c621e7b" name="Default Changelist" comment="new 12">
+      <change afterPath="$PROJECT_DIR$/2021-10-04 13-11-40_TEMP_MPY_wvf_snd.mp3" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pathlistfile.txt" beforeDir="false" afterPath="$PROJECT_DIR$/pathlistfile.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -27,6 +26,9 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
   <component name="ProjectId" id="1u9TJ4ZolfUskKJmehaFzFQGNMV" />
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <ConfirmationsSetting value="2" id="Add" />
@@ -39,7 +41,7 @@
     <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../VK_length_of_tubes" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RunManager">
@@ -130,21 +132,7 @@
       <option name="project" value="LOCAL" />
       <updated>1625595799903</updated>
     </task>
-    <task id="LOCAL-00009" summary="new 15">
-      <created>1625596250574</created>
-      <option name="number" value="00009" />
-      <option name="presentableId" value="LOCAL-00009" />
-      <option name="project" value="LOCAL" />
-      <updated>1625596250575</updated>
-    </task>
-    <task id="LOCAL-00010" summary="new 16">
-      <created>1625596312527</created>
-      <option name="number" value="00010" />
-      <option name="presentableId" value="LOCAL-00010" />
-      <option name="project" value="LOCAL" />
-      <updated>1625596312527</updated>
-    </task>
-    <option name="localTasksCounter" value="11" />
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="Vcs.Log.History.Properties">
@@ -167,7 +155,6 @@
         </entry>
       </map>
     </option>
-    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="VcsManagerConfiguration">
     <option name="ADD_EXTERNAL_FILES_SILENTLY" value="true" />
@@ -178,8 +165,6 @@
     <MESSAGE value="new6" />
     <MESSAGE value="new7" />
     <MESSAGE value="new 12" />
-    <MESSAGE value="new 15" />
-    <MESSAGE value="new 16" />
-    <option name="LAST_COMMIT_MESSAGE" value="new 16" />
+    <option name="LAST_COMMIT_MESSAGE" value="new 12" />
   </component>
 </project>
