@@ -312,15 +312,17 @@ for path in path_list:
 
     # This list we will use to find duplicates.
     files_list = {}
+    update_changed_files_list = False
 
     for file_path in list_files_to_check:
         if cur_vol_of_changes < max_vol_of_changes:
             print(file_path)
             count_files += 1
             # Update ChangedFileList every 1000 files:
-            if count_files % 1000 == 0:
+            if count_files % 1000 == 0 or update_changed_files_list == True:
                 closeChangedFilesList(changed_files_list)
                 changed_files_list = openChangedFilesList(path)
+                update_changed_files_list = False
 
             extension = "." + file_path[-3:]  # Get extension of current file
             if extension == '.3GP' or extension == '.MP4' or extension == '.3gp' \
@@ -334,8 +336,7 @@ for path in path_list:
                         resultVideoResize = videoResize(file_path)
                         cur_vol_of_changes += resultVideoResize[0]
                         file_path = resultVideoResize[1]
-                        closeChangedFilesList(changed_files_list)
-                        changed_files_list = openChangedFilesList(path)
+                        update_changed_files_list = True
                     except:
                         print('Ошибка файла видео: ', file_path)
                 else:
