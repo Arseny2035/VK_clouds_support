@@ -334,6 +334,8 @@ for path in path_list:
                         resultVideoResize = videoResize(file_path)
                         cur_vol_of_changes += resultVideoResize[0]
                         file_path = resultVideoResize[1]
+                        closeChangedFilesList(changed_files_list)
+                        changed_files_list = openChangedFilesList(path)
                     except:
                         print('Ошибка файла видео: ', file_path)
                 else:
